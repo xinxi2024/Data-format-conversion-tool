@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使用说明 - Sloaner文本处理工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <nav class="fixed top-0 left-0 right-0 bg-gray-800 border-b border-gray-700 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <span class="text-2xl font-['Pacifico'] text-primary">Sloaner 文本编辑工具</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="../index.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-button text-sm whitespace-nowrap hover:bg-gray-700">
+                        主页
+                    </a>
+                    <a href="./guide.html" class="text-white font-medium px-3 py-2 rounded-button text-sm whitespace-nowrap bg-gray-700">
+                        使用说明
+                    </a>
+                    <a href="./about.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-button text-sm whitespace-nowrap hover:bg-gray-700">
+                        关于我们
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="pt-24 pb-16 px-4 max-w-4xl mx-auto">
+        <div class="bg-gray-800 rounded-lg p-8 shadow-xl">
+            <h1 class="text-3xl font-bold mb-8">使用说明</h1>
+            
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">基本功能</h2>
+                <div class="space-y-4">
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="text-xl font-medium mb-2">数据格式转换</h3>
+                        <p class="text-gray-300">支持JSON、YAML和Dict三种格式之间的相互转换，只需选择输入和输出格式，点击转换按钮即可。</p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="text-xl font-medium mb-2">数据预览</h3>
+                        <p class="text-gray-300">通过预览功能，可以直观地查看数据结构，支持展开/折叠复杂数据。</p>
+                    </div>
+                    <div class="bg-gray-700 p-4 rounded-lg">
+                        <h3 class="text-xl font-medium mb-2">文件操作</h3>
+                        <p class="text-gray-300">支持上传本地文件进行转换，转换结果可以复制到剪贴板或下载到本地。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">使用步骤</h2>
+                <div class="space-y-4">
+                    <div class="flex items-start space-x-4">
+                        <span class="bg-primary text-white px-3 py-1 rounded-full">1</span>
+                        <div>
+                            <h3 class="text-xl font-medium mb-2">输入数据</h3>
+                            <p class="text-gray-300">在左侧输入框中粘贴或输入要转换的数据，或点击"上传文件"按钮选择本地文件。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <span class="bg-primary text-white px-3 py-1 rounded-full">2</span>
+                        <div>
+                            <h3 class="text-xl font-medium mb-2">选择格式</h3>
+                            <p class="text-gray-300">选择输入数据的格式（JSON/YAML/Dict）和期望输出的格式。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <span class="bg-primary text-white px-3 py-1 rounded-full">3</span>
+                        <div>
+                            <h3 class="text-xl font-medium mb-2">转换数据</h3>
+                            <p class="text-gray-300">点击中间的"转换"按钮，系统会自动将数据转换为目标格式。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <span class="bg-primary text-white px-3 py-1 rounded-full">4</span>
+                        <div>
+                            <h3 class="text-xl font-medium mb-2">查看结果</h3>
+                            <p class="text-gray-300">转换结果会显示在右侧输出框中，可以使用预览功能查看数据结构。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <span class="bg-primary text-white px-3 py-1 rounded-full">5</span>
+                        <div>
+                            <h3 class="text-xl font-medium mb-2">导出结果</h3>
+                            <p class="text-gray-300">可以点击"复制"按钮将结果复制到剪贴板，或点击"下载"按钮保存为文件。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-semibold mb-4">注意事项</h2>
+                <ul class="list-disc list-inside space-y-2 text-gray-300">
+                    <li>确保输入的数据格式正确，否则可能会转换失败。</li>
+                    <li>对于较大的数据文件，建议使用文件上传功能。</li>
+                    <li>如果遇到转换错误，请检查输入格式是否正确选择。</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+    <footer class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between text-sm text-gray-400">
+                <div>© 2025 Sloaner. 保留所有权利</div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="hover:text-white">使用条款</a>
+                    <a href="#" class="hover:text-white">隐私政策</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2196F3',
+                        secondary: '#4CAF50'
+                    },
+                    borderRadius: {
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

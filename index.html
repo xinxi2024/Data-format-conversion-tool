@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sloaner - 数据格式转换工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+
+        .monaco {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+        }
+
+        .toast {
+            transition: all 0.3s ease;
+            transform: translateY(100%);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2196F3',
+                        secondary: '#4CAF50'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <nav class="fixed top-0 left-0 right-0 bg-gray-800 border-b border-gray-700 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <span class="text-2xl font-['Pacifico'] text-primary">Sloaner 文本转换工具</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="./index.html" class="text-white font-medium px-3 py-2 rounded-button text-sm whitespace-nowrap bg-gray-700">
+                        主页
+                    </a>
+                    <a href="./templates/guide.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-button text-sm whitespace-nowrap hover:bg-gray-700">
+                        使用说明
+                    </a>
+                    <a href="./templates/about.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-button text-sm whitespace-nowrap hover:bg-gray-700">
+                        关于我们
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="pt-24 pb-16 px-4 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="bg-gray-800 rounded-lg p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">输入数据</h2>
+                    <div class="flex items-center space-x-2">
+                        <button id="previewInput"
+                            class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-button text-sm flex items-center whitespace-nowrap">
+                            <i class="ri-eye-line mr-2"></i>预览
+                        </button>
+                        <select id="inputFormat" class="bg-gray-700 text-white rounded-button px-3 py-2 text-sm">
+                            <option value="json">JSON</option>
+                            <option value="yaml">YAML</option>
+                            <option value="dict">Dict</option>
+                            <option value="xml">XML</option>
+                        </select>
+                    </div>
+                </div>
+                <textarea id="inputArea"
+                    class="w-full h-96 bg-gray-900 text-gray-100 p-4 rounded-lg monaco text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="在此输入数据..."></textarea>
+                <div class="flex items-center justify-between mt-4">
+                    <div class="flex items-center space-x-2">
+                        <input type="file" id="fileInput" class="hidden" accept=".json,.yaml,.yml,.txt" />
+                        <button id="uploadBtn"
+                            class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-button text-sm flex items-center whitespace-nowrap">
+                            <i class="ri-upload-line mr-2"></i>上传文件
+                        </button>
+                    </div>
+                    <button id="clearInput"
+                        class="text-gray-400 hover:text-white px-4 py-2 rounded-button text-sm flex items-center whitespace-nowrap">
+                        <i class="ri-delete-bin-line mr-2"></i>清空
+                    </button>
+                </div>
+            </div>
+            <div class="flex items-center justify-center">
+                <button id="convertBtn"
+                    class="bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-button shadow-lg flex items-center whitespace-nowrap">
+                    <i class="ri-arrow-left-right-line mr-2"></i>转换
+                </button>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">输出结果</h2>
+                    <div class="flex items-center space-x-2">
+                        <button id="previewOutput"
+                            class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-button text-sm flex items-center whitespace-nowrap">
+                            <i class="ri-eye-line mr-2"></i>预览
+                        </button>
+                        <select id="outputFormat" class="bg-gray-700 text-white rounded-button px-3 py-2 text-sm">
+                            <option value="json">JSON</option>
+                            <option value="yaml">YAML</option>
+                            <option value="dict">Dict</option>
+                            <option value="xml">XML</option>
+                        </select>
+                    </div>
+                </div>
+                <textarea id="outputArea" readonly
+                    class="w-full h-96 bg-gray-900 text-gray-100 p-4 rounded-lg monaco text-sm resize-none focus:outline-none"
+                    placeholder="转换结果将在此显示..."></textarea>
+                <div class="flex items-center justify-end mt-4 space-x-2">
+                    <button id="copyOutput"
+                        class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-button text-sm flex items-center whitespace-nowrap">
+                        <i class="ri-file-copy-line mr-2"></i>复制
+                    </button>
+                    <button id="downloadOutput"
+                        class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-button text-sm flex items-center whitespace-nowrap">
+                        <i class="ri-download-line mr-2"></i>下载
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="fixed bottom-4 right-4">
+        </div>
+        <div id="toast"
+            class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-xl toast flex items-center space-x-3 border border-gray-700 cursor-pointer">
+            <div class="flex-shrink-0">
+                <i class="ri-information-line text-xl text-primary"></i>
+            </div>
+            <div class="flex-1">
+                <span id="toastMessage" class="text-sm"></span>
+                <p class="text-xs text-gray-400 mt-1">点击任意处关闭提示</p>
+            </div>
+        </div>
+        <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-gray-800 rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-auto">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold" id="previewTitle">数据结构预览</h3>
+                    <button id="closePreview" class="text-gray-400 hover:text-white">
+                        <i class="ri-close-line text-xl"></i>
+                    </button>
+                </div>
+                <div id="previewContent"
+                    class="bg-gray-900 rounded-lg p-4 monaco text-sm whitespace-pre cursor-pointer"></div>
+            </div>
+        </div>
+    </main>
+    <footer class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between text-sm text-gray-400">
+                <div>© 2025 Sloaner. 保留所有权利</div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="hover:text-white">使用条款</a>
+                    <a href="#" class="hover:text-white">隐私政策</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const mockData = {
+            json: '{\n    "name": "张伟",\n    "age": 28,\n    "city": "上海",\n    "hobbies": ["读书", "摄影", "旅行"],\n    "contact": {\n        "email": "zhang.wei@example.com",\n        "phone": "13812345678"\n    }\n}',
+            yaml: 'name: 张伟\nage: 28\ncity: 上海\nhobbies:\n  - 读书\n  - 摄影\n  - 旅行\ncontact:\n  email: zhang.wei@example.com\n  phone: "13812345678"',
+            dict: "{'name': '张伟', 'age': 28, 'city': '上海', 'hobbies': ['读书', '摄影', '旅行'], 'contact': {'email': 'zhang.wei@example.com', 'phone': '13812345678'}}"
+        };
+        const inputArea = document.getElementById('inputArea');
+        const outputArea = document.getElementById('outputArea');
+        const inputFormat = document.getElementById('inputFormat');
+        const outputFormat = document.getElementById('outputFormat');
+        const convertBtn = document.getElementById('convertBtn');
+        const clearInput = document.getElementById('clearInput');
+        const copyOutput = document.getElementById('copyOutput');
+        const downloadOutput = document.getElementById('downloadOutput');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        function parseXML(xmlString) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+            
+            function xmlToObj(node) {
+                if (node.nodeType === 3) { // text node
+                    return node.nodeValue.trim();
+                }
+                
+                const obj = {};
+                if (node.attributes && node.attributes.length > 0) {
+                    obj['@attributes'] = {};
+                    for (let i = 0; i < node.attributes.length; i++) {
+                        const attr = node.attributes[i];
+                        obj['@attributes'][attr.nodeName] = attr.nodeValue;
+                    }
+                }
+                
+                if (node.hasChildNodes()) {
+                    const children = node.childNodes;
+                    if (children.length === 1 && children[0].nodeType === 3) {
+                        return children[0].nodeValue.trim();
+                    }
+                    
+                    for (let i = 0; i < children.length; i++) {
+                        const child = children[i];
+                        if (child.nodeType === 1) { // element node
+                            const childObj = xmlToObj(child);
+                            if (obj[child.nodeName]) {
+                                if (!Array.isArray(obj[child.nodeName])) {
+                                    obj[child.nodeName] = [obj[child.nodeName]];
+                                }
+                                obj[child.nodeName].push(childObj);
+                            } else {
+                                obj[child.nodeName] = childObj;
+                            }
+                        }
+                    }
+                }
+                return obj;
+            }
+            
+            return xmlToObj(xmlDoc.documentElement);
+        }
+        
+        function objToXML(obj) {
+            function createXMLElement(key, value) {
+                if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+                    return `<${key}>${value}</${key}>`;
+                }
+                
+                if (Array.isArray(value)) {
+                    return value.map(item => createXMLElement(key, item)).join('\n');
+                }
+                
+                if (typeof value === 'object') {
+                    let attrs = '';
+                    let content = '';
+                    
+                    if (value['@attributes']) {
+                        attrs = Object.entries(value['@attributes'])
+                            .map(([k, v]) => ` ${k}="${v}"`)
+                            .join('');
+                        delete value['@attributes'];
+                    }
+                    
+                    content = Object.entries(value)
+                        .map(([k, v]) => createXMLElement(k, v))
+                        .join('\n');
+                    
+                    return `<${key}${attrs}>${content ? '\n' + content + '\n' : ''}</${key}>`;
+                }
+                
+                return `<${key}/>`;
+            }
+            
+            const rootElements = Object.entries(obj)
+                .map(([key, value]) => createXMLElement(key, value))
+                .join('\n');
+            return `<?xml version="1.0" encoding="UTF-8"?>\n${rootElements}`;
+        }
+
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        inputFormat.addEventListener('change', () => {
+            inputArea.value = mockData[inputFormat.value];
+        });
+        clearInput.addEventListener('click', () => {
+            inputArea.value = '';
+            outputArea.value = '';
+        });
+        convertBtn.addEventListener('click', () => {
+            if (!inputArea.value.trim()) {
+                showToast('请输入需要转换的数据');
+                return;
+            }
+            try {
+                let inputData;
+                // 解析输入数据
+                switch (inputFormat.value) {
+                    case 'json':
+                        inputData = JSON.parse(inputArea.value);
+                        break;
+                    case 'yaml':
+                        // 简单的YAML解析
+                        inputData = inputArea.value.split('\n').reduce((obj, line) => {
+                            if (line.includes(':')) {
+                                const [key, value] = line.split(':').map(s => s.trim());
+                                if (value) obj[key] = value;
+                            }
+                            return obj;
+                        }, {});
+                        break;
+                    case 'dict':
+                        inputData = eval('(' + inputArea.value + ')');
+                        break;
+                    case 'xml':
+                        inputData = parseXML(inputArea.value);
+                        break;
+                }
+                // 转换为目标格式
+                let outputResult;
+                switch (outputFormat.value) {
+                    case 'json':
+                        outputResult = JSON.stringify(inputData, null, 2);
+                        break;
+                    case 'yaml':
+                        outputResult = Object.entries(inputData)
+                            .map(([key, value]) => `${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`)
+                            .join('\n');
+                        break;
+                    case 'dict':
+                        outputResult = JSON.stringify(inputData)
+                            .replace(/"/g, "'")
+                            .replace(/'([^']+)':/g, "$1:");
+                        break;
+                    case 'xml':
+                        outputResult = objToXML(inputData);
+                        break;
+                }
+                outputArea.value = outputResult;
+                showToast('转换成功');
+            } catch (error) {
+                showToast('数据格式错误，请检查输入');
+                console.error(error);
+            }
+        });
+        copyOutput.addEventListener('click', () => {
+            if (!outputArea.value.trim()) {
+                showToast('没有可复制的内容');
+                return;
+            }
+            navigator.clipboard.writeText(outputArea.value);
+            showToast('已复制到剪贴板');
+        });
+        downloadOutput.addEventListener('click', () => {
+            if (!outputArea.value.trim()) {
+                showToast('没有可下载的内容');
+                return;
+            }
+            const blob = new Blob([outputArea.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `converted.${outputFormat.value}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('文件已下载');
+        });
+        const previewModal = document.getElementById('previewModal');
+        const previewContent = document.getElementById('previewContent');
+        const previewTitle = document.getElementById('previewTitle');
+        const closePreview = document.getElementById('closePreview');
+        function getDataLength(data) {
+            if (Array.isArray(data)) {
+                return `length[${data.length}]`;
+            } else if (typeof data === 'string') {
+                return `length[${data.length}]`;
+            } else if (typeof data === 'object' && data !== null) {
+                return `length[${Object.keys(data).length}]`;
+            }
+            return data;
+        }
+        function createPreviewContent(data, expanded = {}, path = '') {
+            if (typeof data !== 'object' || data === null) {
+                return data;
+            }
+            const result = Array.isArray(data) ? [] : {};
+            for (const key in data) {
+                const currentPath = path ? `${path}.${key}` : key;
+                if (typeof data[key] === 'object' && data[key] !== null) {
+                    if (expanded[currentPath]) {
+                        result[key] = createPreviewContent(data[key], expanded, currentPath);
+                    } else {
+                        result[key] = Array.isArray(data[key]) ? 
+                            `length[${data[key].length}]` : 
+                            `length[${Object.keys(data[key]).length}]`;
+                    }
+                } else {
+                    result[key] = data[key];
+                }
+            }
+            return result;
+        }
+
+        function showPreviewModal(title, content) {
+            try {
+                let parsed;
+                if (typeof content === 'string') {
+                    switch (title.includes('输出') ? outputFormat.value : inputFormat.value) {
+                        case 'json':
+                            parsed = JSON.parse(content);
+                            break;
+                        case 'yaml':
+                            parsed = content.split('\n').reduce((obj, line) => {
+                                if (line.includes(':')) {
+                                    const [key, value] = line.split(':').map(s => s.trim());
+                                    if (value) obj[key] = value;
+                                }
+                                return obj;
+                            }, {});
+                            break;
+                        case 'dict':
+                            parsed = eval('(' + content + ')');
+                            break;
+                        default:
+                            parsed = JSON.parse(content);
+                    }
+                } else {
+                    parsed = content;
+                }
+
+                let expanded = {};
+                const renderPreview = () => {
+                    const preview = createPreviewContent(parsed, expanded);
+                    const formattedContent = JSON.stringify(preview, null, 2);
+                    previewContent.innerHTML = formattedContent.replace(/"(length\[\d+\])"/g, (match, p1) => {
+                        return `<span class="text-primary hover:text-blue-400 cursor-pointer" data-length="${p1}">${p1}</span>`;
+                    });
+                };
+
+                renderPreview();
+
+                const handleClick = (e) => {
+                    const lengthSpan = e.target.closest('[data-length]');
+                    if (lengthSpan) {
+                        const pathParts = [];
+                        let current = lengthSpan;
+                        const content = previewContent.textContent;
+                        const lines = content.split('\n');
+                        const clickedLineIndex = lines.findIndex(line => 
+                            line.includes(lengthSpan.getAttribute('data-length')));
+
+                        for (let i = clickedLineIndex; i >= 0; i--) {
+                            const line = lines[i];
+                            const match = line.match(/"([^"]+)":\s/);
+                            if (match) {
+                                const indent = line.match(/^\s*/)[0].length;
+                                if (pathParts.length === 0 || 
+                                    indent < line.match(/^\s*/)[0].length) {
+                                    pathParts.unshift(match[1]);
+                                }
+                            }
+                        }
+
+                        const path = pathParts.join('.');
+                        expanded[path] = !expanded[path];
+                        renderPreview();
+                    }
+                };
+
+                previewContent.removeEventListener('click', handleClick);
+                previewContent.addEventListener('click', handleClick);
+
+                previewTitle.textContent = title;
+                previewModal.classList.remove('hidden');
+                previewModal.classList.add('flex');
+            } catch (error) {
+                console.error(error);
+                showToast('无法解析数据结构');
+            }
+        }
+        document.getElementById('previewInput').addEventListener('click', () => {
+            if (!inputArea.value.trim()) {
+                showToast('没有输入数据');
+                return;
+            }
+            showPreviewModal('输入数据结构预览', inputArea.value);
+        });
+        document.getElementById('previewOutput').addEventListener('click', () => {
+            if (!outputArea.value.trim()) {
+                showToast('没有输出数据');
+                return;
+            }
+            showPreviewModal('输出数据结构预览', outputArea.value);
+        });
+        closePreview.addEventListener('click', () => {
+            previewModal.classList.add('hidden');
+            previewModal.classList.remove('flex');
+        });
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) {
+                previewModal.classList.add('hidden');
+                previewModal.classList.remove('flex');
+            }
+        });
+        inputArea.value = mockData[inputFormat.value];
+        const uploadBtn = document.getElementById('uploadBtn');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const content = e.target.result;
+                    const fileExt = file.name.split('.').pop().toLowerCase();
+                    
+                    // 自动选择输入格式
+                    if (fileExt === 'json') {
+                        inputFormat.value = 'json';
+                    } else if (fileExt === 'yaml' || fileExt === 'yml') {
+                        inputFormat.value = 'yaml';
+                    } else if (fileExt === 'txt') {
+                        // 尝试自动检测格式
+                        if (content.trim().startsWith('{') || content.trim().startsWith('[')) {
+                            inputFormat.value = 'json';
+                        } else if (content.includes(':')) {
+                            inputFormat.value = 'yaml';
+                        } else {
+                            inputFormat.value = 'dict';
+                        }
+                    }
+
+                    inputArea.value = content;
+                    showToast('文件上传成功');
+                } catch (error) {
+                    showToast('文件读取失败，请检查文件格式');
+                    console.error(error);
+                }
+            };
+
+            reader.onerror = () => {
+                showToast('文件读取失败，请重试');
+                console.error(reader.error);
+            };
+
+            reader.readAsText(file);
+        });
+    </script>
+</body>
+</html>

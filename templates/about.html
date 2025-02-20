@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - Sloaner文本处理工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <nav class="fixed top-0 left-0 right-0 bg-gray-800 border-b border-gray-700 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <span class="text-2xl font-['Pacifico'] text-primary">Sloaner 文本编辑工具</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- 主页 -->
+                    <a href="../index.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-button text-sm whitespace-nowrap hover:bg-gray-700">
+                        主页
+                    </a>
+                    <a href="guide.html" class="text-gray-300 hover:text-white px-3 py-2 rounded-button text-sm whitespace-nowrap hover:bg-gray-700">
+                        使用说明
+                    </a>
+                    <a href="about.html" class="text-white font-medium px-3 py-2 rounded-button text-sm whitespace-nowrap bg-gray-700">
+                        关于我们
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="pt-24 pb-16 px-4 max-w-4xl mx-auto">
+        <div class="bg-gray-800 rounded-lg p-8 shadow-xl">
+            <h1 class="text-3xl font-bold mb-8">关于我们</h1>
+            
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">项目简介</h2>
+                <p class="text-gray-300 leading-relaxed">
+                    Sloaner文本处理工具是一个开源的在线数据格式转换工具，旨在为开发者和数据处理人员提供便捷的数据格式转换服务。
+                    我们致力于提供简单易用、高效可靠的工具，帮助用户更好地处理各种数据格式。
+                </p>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">我们的优势</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <i class="ri-speed-line text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-medium mb-2">高效便捷</h3>
+                        <p class="text-gray-300">快速完成数据格式转换，支持批量处理，提高工作效率。</p>
+                    </div>
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <i class="ri-shield-check-line text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-medium mb-2">安全可靠</h3>
+                        <p class="text-gray-300">所有数据处理均在本地完成，不会上传到服务器，保护数据安全。</p>
+                    </div>
+                    <div class="bg-gray-700 p-6 rounded-lg">
+                        <i class="ri-code-box-line text-4xl text-primary mb-4"></i>
+                        <h3 class="text-xl font-medium mb-2">开源免费</h3>
+                        <p class="text-gray-300">代码完全开源，可以自由使用和修改，欢迎社区贡献。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold mb-4">联系我们</h2>
+                <div class="bg-gray-700 p-6 rounded-lg">
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <i class="ri-github-fill text-xl"></i>
+                            <a href="https://github.com/sloaner" class="text-primary hover:text-blue-400">GitHub</a>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <i class="ri-mail-line text-xl"></i>
+                            <a href="mailto:contact@sloaner.com" class="text-primary hover:text-blue-400">contact@sloaner.com</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-2xl font-semibold mb-4">加入我们</h2>
+                <p class="text-gray-300 leading-relaxed">
+                    我们欢迎对开源项目感兴趣的开发者加入。如果你有任何建议或想法，欢迎在GitHub上提交Issue或Pull Request。
+                    我们一起把这个工具做得更好！
+                </p>
+            </section>
+        </div>
+    </main>
+    <footer class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between text-sm text-gray-400">
+                <div>© 2025 Sloaner. 保留所有权利</div>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="hover:text-white">使用条款</a>
+                    <a href="#" class="hover:text-white">隐私政策</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2196F3',
+                        secondary: '#4CAF50'
+                    },
+                    borderRadius: {
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
